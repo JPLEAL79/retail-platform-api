@@ -24,10 +24,11 @@ public class Orden {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long clienteId;
 
     // The total is stored in CLP with no decimal places.
-    @Column(precision = 12, scale = 0)
+    @Column(nullable = false, precision = 12, scale = 0)
     private BigDecimal total;
 
     // Think of this as the order header.

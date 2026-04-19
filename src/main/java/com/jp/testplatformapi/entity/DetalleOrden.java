@@ -1,6 +1,7 @@
 package com.jp.testplatformapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,8 +22,10 @@ public class DetalleOrden {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long productoId;
 
+    @Column(nullable = false)
     private Integer cantidad;
 
     // This is one line inside the order.
