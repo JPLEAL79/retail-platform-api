@@ -21,6 +21,7 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // SKU is the business key used to find the product in the catalog.
     @Column(nullable = false, unique = true, length = 30)
     private String sku;
 

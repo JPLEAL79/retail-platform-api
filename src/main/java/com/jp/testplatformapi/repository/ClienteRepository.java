@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
+    // Spring Data builds these queries from the method names.
     boolean existsByRut(String rut);
 
     boolean existsByRutAndIdNot(String rut, Long id);

@@ -8,6 +8,7 @@ public class OrdenResponse {
     private Long id;
     private Long clienteId;
     private BigDecimal total;
+    // The response returns the order header plus its detail lines.
     private List<DetalleOrdenResponse> detalles;
 
     public Long getId() {

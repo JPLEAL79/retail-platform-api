@@ -15,6 +15,7 @@ public final class OrdenMapper {
     }
 
     public static Orden toEntity(OrdenRequest request) {
+        // The mapper turns the external API contract into the internal entity model.
         Orden orden = new Orden();
         orden.setClienteId(request.getClienteId());
         orden.setTotal(request.getTotal());
@@ -27,6 +28,7 @@ public final class OrdenMapper {
     }
 
     public static OrdenResponse toResponse(Orden orden) {
+        // The response is built from the entity so controllers do not expose JPA objects directly.
         OrdenResponse response = new OrdenResponse();
         response.setId(orden.getId());
         response.setClienteId(orden.getClienteId());
