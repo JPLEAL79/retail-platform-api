@@ -32,7 +32,7 @@ public class Orden {
 
     // Think of this as the order header.
     // The child rows store the product-level detail for the sale.
-    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleOrden> detalles;
 
     public Orden() {

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +47,10 @@ public class ProductoController {
     @PostMapping
     public ProductoResponse create(@Valid @RequestBody ProductoRequest request) {
         return ProductoMapper.toResponse(service.create(ProductoMapper.toEntity(request)));
+    }
+
+    @PutMapping("/{id}")
+    public ProductoResponse update(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
+        return ProductoMapper.toResponse(service.update(id, ProductoMapper.toEntity(request)));
     }
 }

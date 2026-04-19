@@ -2,6 +2,7 @@ package com.jp.testplatformapi.dto.response;
 
 public class DetalleOrdenResponse {
 
+    // This keeps the response compact and focused on what was ordered.
     private Long productoId;
     private Integer cantidad;
 

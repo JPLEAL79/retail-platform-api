@@ -12,6 +12,7 @@ import java.util.List;
 
 public class OrdenRequest {
 
+    // The request carries ids instead of nested entities to keep the API contract simple.
     @NotNull(message = "El clienteId es obligatorio.")
     @Positive(message = "El clienteId debe ser mayor que cero.")
     private Long clienteId;

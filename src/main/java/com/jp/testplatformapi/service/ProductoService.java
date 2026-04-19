@@ -37,10 +37,34 @@ public class ProductoService {
             throw new IllegalArgumentException("El producto no puede ser null.");
         }
 
+        // SKU must stay unique because the API uses it as a business lookup.
         if (repository.existsBySku(producto.getSku())) {
             throw new ConflictException("Ya existe un producto con ese sku.");
         }
 
         return repository.save(producto);
+    }
+
+    public Producto update(@Nonnull Long id, Producto productoActualizado) {
+        if (productoActualizado == null) {
+            throw new IllegalArgumentException("El producto no puede ser null.");
+        }
+
+        Producto productoExistente = getById(id);
+
+        // Same product can keep its SKU, but it cannot reuse one from another product.
+        if (repository.existsBySkuAndIdNot(productoActualizado.getSku(), id)) {
+            throw new ConflictException("Ya existe un producto con ese sku.");
+        }
+
+        // PUT replaces the current catalog state for this product.
+        productoExistente.setSku(productoActualizado.getSku());
+        productoExistente.setNombre(productoActualizado.getNombre());
+        productoExistente.setMarca(productoActualizado.getMarca());
+        productoExistente.setPrecio(productoActualizado.getPrecio());
+        productoExistente.setStock(productoActualizado.getStock());
+        productoExistente.setActivo(productoActualizado.getActivo());
+
+        return repository.save(productoExistente);
     }
 }

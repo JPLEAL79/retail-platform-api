@@ -19,6 +19,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // The RUT is the business identifier for the customer.
     @Column(nullable = false, unique = true, length = 12)
     private String rut;
 

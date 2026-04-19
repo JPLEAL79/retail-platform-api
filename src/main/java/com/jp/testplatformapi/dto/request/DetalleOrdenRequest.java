@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 
 public class DetalleOrdenRequest {
 
+    // The client sends the product reference, not the full product object.
     @NotNull(message = "El productoId es obligatorio.")
     @Positive(message = "El productoId debe ser mayor que cero.")
     private Long productoId;
