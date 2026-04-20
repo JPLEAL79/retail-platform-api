@@ -95,8 +95,7 @@ public class GlobalExceptionHandler {
             if (invalidFormatException.getTargetType() == EstadoOrden.class) {
                 details = List.of(
                         fieldPath + ": El estado es inválido. Valores permitidos: "
-                                + String.join(", ",
-                                Arrays.stream(EstadoOrden.values()).map(Enum::name).toList())
+                                + String.join(", ", Arrays.stream(EstadoOrden.values()).map(Enum::name).toList())
                                 + "."
                 );
             } else {
