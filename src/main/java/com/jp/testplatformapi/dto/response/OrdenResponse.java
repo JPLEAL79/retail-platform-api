@@ -10,6 +10,7 @@ public class OrdenResponse {
     private BigDecimal total;
     // The response returns the order header plus its detail lines.
     private List<DetalleOrdenResponse> detalles;
+    private DireccionEntregaResponse direccionEntrega;
 
     public Long getId() {
         return id;
@@ -41,5 +42,13 @@ public class OrdenResponse {
 
     public void setDetalles(List<DetalleOrdenResponse> detalles) {
         this.detalles = detalles;
+    }
+
+    public DireccionEntregaResponse getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(DireccionEntregaResponse direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
     }
 }

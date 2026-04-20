@@ -26,6 +26,9 @@ public class OrdenRequest {
     @NotEmpty(message = "La orden debe tener al menos un detalle.")
     private List<DetalleOrdenRequest> detalles;
 
+    @Valid
+    private DireccionEntregaRequest direccionEntrega;
+
     public Long getClienteId() {
         return clienteId;
     }
@@ -48,5 +51,13 @@ public class OrdenRequest {
 
     public void setDetalles(List<DetalleOrdenRequest> detalles) {
         this.detalles = detalles;
+    }
+
+    public DireccionEntregaRequest getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(DireccionEntregaRequest direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
     }
 }

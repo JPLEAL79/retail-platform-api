@@ -1,6 +1,7 @@
 package com.jp.testplatformapi.service;
 
 import com.jp.testplatformapi.entity.DetalleOrden;
+import com.jp.testplatformapi.entity.DireccionEntrega;
 import com.jp.testplatformapi.entity.Orden;
 import com.jp.testplatformapi.entity.Producto;
 import com.jp.testplatformapi.exception.ResourceNotFoundException;
@@ -34,7 +35,8 @@ public class OrdenService {
     public Orden create(Orden orden) {
         validarOrden(orden);
         validarCliente(orden.getClienteId());
-        prepararDetalles(orden, orden.getDetalles());
+        orden.setDetalles(construirDetalles(orden, orden.getDetalles()));
+        asignarDireccionNueva(orden, orden.getDireccionEntrega());
         orden.setTotal(calcularTotal(orden.getDetalles()));
 
         return repository.save(orden);
@@ -58,7 +60,8 @@ public class OrdenService {
 
         // PUT replaces the full order state, including its detail rows.
         ordenExistente.getDetalles().clear();
-        prepararDetalles(ordenExistente, ordenActualizada.getDetalles());
+        ordenExistente.getDetalles().addAll(construirDetalles(ordenExistente, ordenActualizada.getDetalles()));
+        actualizarDireccionEntrega(ordenExistente, ordenActualizada.getDireccionEntrega());
         ordenExistente.setTotal(calcularTotal(ordenExistente.getDetalles()));
 
         return repository.save(ordenExistente);
@@ -80,7 +83,7 @@ public class OrdenService {
         }
     }
 
-    private void prepararDetalles(Orden orden, List<DetalleOrden> detallesEntrada) {
+    private List<DetalleOrden> construirDetalles(Orden orden, List<DetalleOrden> detallesEntrada) {
         // We validate each product id here so the order cannot reference missing catalog data.
         List<DetalleOrden> detallesPreparados = new ArrayList<>();
 
@@ -90,7 +93,37 @@ public class OrdenService {
             detallesPreparados.add(detalle);
         }
 
-        orden.setDetalles(detallesPreparados);
+        return detallesPreparados;
+    }
+
+    private void asignarDireccionNueva(Orden orden, DireccionEntrega direccionEntrega) {
+        if (direccionEntrega == null) {
+            orden.setDireccionEntrega(null);
+            return;
+        }
+
+        direccionEntrega.setOrden(orden);
+        orden.setDireccionEntrega(direccionEntrega);
+    }
+
+    private void actualizarDireccionEntrega(Orden orden, DireccionEntrega direccionActualizada) {
+        if (direccionActualizada == null) {
+            orden.setDireccionEntrega(null);
+            return;
+        }
+
+        if (orden.getDireccionEntrega() == null) {
+            asignarDireccionNueva(orden, direccionActualizada);
+            return;
+        }
+
+        DireccionEntrega direccionExistente = orden.getDireccionEntrega();
+        direccionExistente.setRegion(direccionActualizada.getRegion());
+        direccionExistente.setComuna(direccionActualizada.getComuna());
+        direccionExistente.setDireccion(direccionActualizada.getDireccion());
+        direccionExistente.setNumero(direccionActualizada.getNumero());
+        direccionExistente.setNumeroDepto(direccionActualizada.getNumeroDepto());
+        direccionExistente.setReferencia(direccionActualizada.getReferencia());
     }
 
     private BigDecimal calcularTotal(List<DetalleOrden> detalles) {
