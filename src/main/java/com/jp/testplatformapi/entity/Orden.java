@@ -3,6 +3,8 @@ package com.jp.testplatformapi.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +33,10 @@ public class Orden {
     // The total is stored in CLP with no decimal places.
     @Column(nullable = false, precision = 12, scale = 0)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private EstadoOrden estado;
 
     // Think of this as the order header.
     // The child rows store the product-level detail for the sale.

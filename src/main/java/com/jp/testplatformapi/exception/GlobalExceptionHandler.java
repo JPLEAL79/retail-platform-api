@@ -1,16 +1,18 @@
 package com.jp.testplatformapi.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.jp.testplatformapi.entity.EstadoOrden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
@@ -79,7 +81,7 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException exception,
             HttpServletRequest request
     ) {
-        String message = "Invalid JSON or incorrect data type.";
+        String message = "JSON inválido o tipo de dato incorrecto.";
         List<String> details = List.of();
 
         if (exception.getCause() instanceof InvalidFormatException invalidFormatException) {
@@ -90,11 +92,20 @@ public class GlobalExceptionHandler {
                     .reduce((first, second) -> first + "." + second)
                     .orElse("unknown");
 
-            String expectedType = invalidFormatException.getTargetType() != null
-                    ? invalidFormatException.getTargetType().getSimpleName()
-                    : "valid type";
+            if (invalidFormatException.getTargetType() == EstadoOrden.class) {
+                details = List.of(
+                        fieldPath + ": El estado es inválido. Valores permitidos: "
+                                + String.join(", ",
+                                Arrays.stream(EstadoOrden.values()).map(Enum::name).toList())
+                                + "."
+                );
+            } else {
+                String expectedType = invalidFormatException.getTargetType() != null
+                        ? invalidFormatException.getTargetType().getSimpleName()
+                        : "tipo válido";
 
-            details = List.of("Field '" + fieldPath + "' expects a " + expectedType + " value.");
+                details = List.of(fieldPath + ": El valor enviado no coincide con el tipo esperado (" + expectedType + ").");
+            }
         }
 
         return ResponseEntity.badRequest().body(buildError(

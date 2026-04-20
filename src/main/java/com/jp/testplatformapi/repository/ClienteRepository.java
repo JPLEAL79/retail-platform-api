@@ -12,5 +12,9 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     boolean existsByRutAndIdNot(String rut, Long id);
 
+    boolean existsByCorreo(String correo);
+
+    boolean existsByCorreoAndIdNot(String correo, Long id);
+
     Optional<Cliente> findByRut(String rut);
 }

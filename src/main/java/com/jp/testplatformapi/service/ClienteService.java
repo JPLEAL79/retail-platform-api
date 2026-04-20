@@ -42,6 +42,10 @@ public class ClienteService {
             throw new ConflictException("Ya existe un cliente con ese rut.");
         }
 
+        if (repository.existsByCorreo(cliente.getCorreo())) {
+            throw new ConflictException("Ya existe un cliente con ese correo.");
+        }
+
         return repository.save(cliente);
     }
 
@@ -55,6 +59,10 @@ public class ClienteService {
         // Same customer can keep the same RUT, but it cannot collide with another record.
         if (repository.existsByRutAndIdNot(clienteActualizado.getRut(), id)) {
             throw new ConflictException("Ya existe un cliente con ese rut.");
+        }
+
+        if (repository.existsByCorreoAndIdNot(clienteActualizado.getCorreo(), id)) {
+            throw new ConflictException("Ya existe un cliente con ese correo.");
         }
 
         // PUT is treated as the new full state of the customer.

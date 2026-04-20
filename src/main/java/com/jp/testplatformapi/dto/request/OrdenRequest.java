@@ -1,5 +1,6 @@
 package com.jp.testplatformapi.dto.request;
 
+import com.jp.testplatformapi.entity.EstadoOrden;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
@@ -27,7 +28,10 @@ public class OrdenRequest {
     private List<DetalleOrdenRequest> detalles;
 
     @Valid
+    @NotNull(message = "La dirección de entrega es obligatoria.")
     private DireccionEntregaRequest direccionEntrega;
+
+    private EstadoOrden estado;
 
     public Long getClienteId() {
         return clienteId;
@@ -59,5 +63,13 @@ public class OrdenRequest {
 
     public void setDireccionEntrega(DireccionEntregaRequest direccionEntrega) {
         this.direccionEntrega = direccionEntrega;
+    }
+
+    public EstadoOrden getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoOrden estado) {
+        this.estado = estado;
     }
 }

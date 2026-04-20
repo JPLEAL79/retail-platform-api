@@ -2,6 +2,7 @@ package com.jp.testplatformapi.service;
 
 import com.jp.testplatformapi.entity.DetalleOrden;
 import com.jp.testplatformapi.entity.DireccionEntrega;
+import com.jp.testplatformapi.entity.EstadoOrden;
 import com.jp.testplatformapi.entity.Orden;
 import com.jp.testplatformapi.entity.Producto;
 import com.jp.testplatformapi.exception.ResourceNotFoundException;
@@ -38,6 +39,7 @@ public class OrdenService {
         orden.setDetalles(construirDetalles(orden, orden.getDetalles()));
         asignarDireccionNueva(orden, orden.getDireccionEntrega());
         orden.setTotal(calcularTotal(orden.getDetalles()));
+        orden.setEstado(resolverEstadoCreacion(orden.getEstado()));
 
         return repository.save(orden);
     }
@@ -57,6 +59,7 @@ public class OrdenService {
 
         Orden ordenExistente = getById(id);
         ordenExistente.setClienteId(ordenActualizada.getClienteId());
+        ordenExistente.setEstado(resolverEstadoActualizacion(ordenExistente.getEstado(), ordenActualizada.getEstado()));
 
         // PUT replaces the full order state, including its detail rows.
         ordenExistente.getDetalles().clear();
@@ -141,5 +144,13 @@ public class OrdenService {
     private Producto obtenerProducto(Long productoId) {
         return productoRepository.findById(productoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id " + productoId + "."));
+    }
+
+    private EstadoOrden resolverEstadoCreacion(EstadoOrden estado) {
+        return estado != null ? estado : EstadoOrden.CREADA;
+    }
+
+    private EstadoOrden resolverEstadoActualizacion(EstadoOrden estadoActual, EstadoOrden estadoNuevo) {
+        return estadoNuevo != null ? estadoNuevo : estadoActual;
     }
 }

@@ -22,6 +22,7 @@ public final class OrdenMapper {
         Orden orden = new Orden();
         orden.setClienteId(request.getClienteId());
         orden.setTotal(request.getTotal());
+        orden.setEstado(request.getEstado());
         orden.setDetalles(request.getDetalles()
                 .stream()
                 .map(OrdenMapper::toDetalleEntity)
@@ -37,6 +38,7 @@ public final class OrdenMapper {
         response.setId(orden.getId());
         response.setClienteId(orden.getClienteId());
         response.setTotal(orden.getTotal());
+        response.setEstado(orden.getEstado());
 
         if (orden.getDetalles() != null) {
             List<DetalleOrdenResponse> detalles = orden.getDetalles()

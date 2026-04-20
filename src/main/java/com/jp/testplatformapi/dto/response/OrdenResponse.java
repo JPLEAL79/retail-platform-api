@@ -1,5 +1,7 @@
 package com.jp.testplatformapi.dto.response;
 
+import com.jp.testplatformapi.entity.EstadoOrden;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class OrdenResponse {
     private Long id;
     private Long clienteId;
     private BigDecimal total;
+    private EstadoOrden estado;
     // The response returns the order header plus its detail lines.
     private List<DetalleOrdenResponse> detalles;
     private DireccionEntregaResponse direccionEntrega;
@@ -34,6 +37,14 @@ public class OrdenResponse {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public EstadoOrden getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoOrden estado) {
+        this.estado = estado;
     }
 
     public List<DetalleOrdenResponse> getDetalles() {
