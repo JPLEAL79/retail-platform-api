@@ -46,6 +46,10 @@ public class ClienteService {
             throw new ConflictException("Ya existe un cliente con ese correo.");
         }
 
+        if (repository.existsByTelefono(cliente.getTelefono())) {
+            throw new ConflictException("Ya existe un cliente con ese telefono.");
+        }
+
         return repository.save(cliente);
     }
 
@@ -63,6 +67,10 @@ public class ClienteService {
 
         if (repository.existsByCorreoAndIdNot(clienteActualizado.getCorreo(), id)) {
             throw new ConflictException("Ya existe un cliente con ese correo.");
+        }
+
+        if (repository.existsByTelefonoAndIdNot(clienteActualizado.getTelefono(), id)) {
+            throw new ConflictException("Ya existe un cliente con ese telefono.");
         }
 
         // PUT is treated as the new full state of the customer.

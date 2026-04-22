@@ -16,5 +16,9 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     boolean existsByCorreoAndIdNot(String correo, Long id);
 
+    boolean existsByTelefono(String telefono);
+
+    boolean existsByTelefonoAndIdNot(String telefono, Long id);
+
     Optional<Cliente> findByRut(String rut);
 }

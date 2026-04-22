@@ -32,7 +32,7 @@ public class Cliente {
     @Column(nullable = false, unique = true, length = 150)
     private String correo;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, unique = true, length = 20)
     private String telefono;
 
     // JPA needs an empty constructor to instantiate the entity.

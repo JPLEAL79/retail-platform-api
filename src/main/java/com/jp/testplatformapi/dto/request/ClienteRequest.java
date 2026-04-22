@@ -17,24 +17,24 @@ public class ClienteRequest {
 
     @NotBlank(message = "El campo nombre es obligatorio.")
     @Size(max = 100, message = "El campo nombre no debe superar los 100 caracteres.")
-    @Pattern(regexp = "^$|.*\\p{L}.*", message = "El campo nombre debe contener texto válido.")
+    @Pattern(regexp = "^$|.*\\p{L}.*", message = "El campo nombre debe contener texto valido.")
     private String nombre;
 
     @NotBlank(message = "El campo apellido es obligatorio.")
     @Size(max = 100, message = "El campo apellido no debe superar los 100 caracteres.")
-    @Pattern(regexp = "^$|.*\\p{L}.*", message = "El campo apellido debe contener texto válido.")
+    @Pattern(regexp = "^$|.*\\p{L}.*", message = "El campo apellido debe contener texto valido.")
     private String apellido;
 
     @NotBlank(message = "El campo correo es obligatorio.")
     @Size(max = 150, message = "El campo correo no debe superar los 150 caracteres.")
-    @Email(message = "El campo correo debe tener un formato válido.")
+    @Email(message = "El campo correo debe tener un formato valido.")
     private String correo;
 
-    @NotBlank(message = "El campo teléfono es obligatorio.")
-    @Size(max = 20, message = "El campo teléfono no debe superar los 20 caracteres.")
+    @NotBlank(message = "El campo telefono es obligatorio.")
+    @Size(max = 20, message = "El campo telefono no debe superar los 20 caracteres.")
     @Pattern(
             regexp = "^$|^\\+?\\d{8,15}$",
-            message = "El campo teléfono debe contener solo números y puede incluir + al inicio."
+            message = "El campo telefono debe contener solo numeros y puede incluir + al inicio."
     )
     private String telefono;
 
