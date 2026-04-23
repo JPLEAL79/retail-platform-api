@@ -1,6 +1,6 @@
 # Retail Platform API
 
-Spring Boot retail platform split into independent services for customers, products, and orders.
+A small retail backend built with Spring Boot. It is split into separate services so customers, products, and orders can grow on their own while still being easy to run locally.
 
 ## Stack
 
@@ -25,16 +25,18 @@ Spring Boot retail platform split into independent services for customers, produ
 ## Structure
 
 ```text
-docker/
-  postgres/
-    init-databases.sql
-services/
-  common/
-  customer-service/
-  product-service/
-  order-service/
-docker-compose.yml
-pom.xml
+retail-platform-api
+├── docker
+│   └── postgres
+│       └── init-databases.sql
+├── services
+│   ├── common
+│   ├── customer-service
+│   ├── product-service
+│   └── order-service
+├── docker-compose.yml
+├── pom.xml
+└── README.md
 ```
 
 ## Run
