@@ -5,7 +5,7 @@ Spring Boot retail platform split into independent services for customers, produ
 ## Stack
 
 - Java 17
-- Spring Boot 3.3.2
+- Spring Boot 3.5.13
 - Spring Web
 - Spring Data JPA
 - Bean Validation
