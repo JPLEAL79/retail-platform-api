@@ -1,83 +1,59 @@
 # Retail Platform API
 
-A Spring Boot REST API for a retail domain with customers, products, orders, delivery addresses, and order status management.
+Spring Boot retail platform split into independent services for customers, products, and orders.
 
 ## Stack
 
 - Java 17
-- Spring Boot 3
+- Spring Boot 3.3.2
 - Spring Web
 - Spring Data JPA
 - Bean Validation
 - PostgreSQL
 - Maven
-- Docker
+- Docker Compose
 
-## Domain
+## Modules
 
-- `Cliente`
-- `Producto`
-- `Orden`
-- `DetalleOrden`
-- `DireccionEntrega`
-- `EstadoOrden`
+| Module | Port | Database | Responsibility |
+| --- | --- | --- | --- |
+| `customer-service` | `8082` | `customerdb` | Customer profile and contact data |
+| `product-service` | `8083` | `productdb` | Product catalog, price, stock, and active status |
+| `order-service` | `8084` | `orderdb` | Orders, order items, delivery address, and status |
+| `common` | N/A | N/A | Shared API errors, exceptions, and common properties |
 
 ## Structure
 
 ```text
-src
-└─ main
-   ├─ java/com/jp/testplatformapi
-   │  ├─ controller
-   │  ├─ dto
-   │  │  ├─ request
-   │  │  └─ response
-   │  ├─ entity
-   │  ├─ exception
-   │  ├─ mapper
-   │  ├─ repository
-   │  ├─ service
-   │  └─ TestPlatformApiApplication.java
-   └─ resources
-      └─ application.properties
+docker/
+  postgres/
+    init-databases.sql
+services/
+  common/
+  customer-service/
+  product-service/
+  order-service/
+docker-compose.yml
+pom.xml
 ```
-
-## Endpoints
-
-### Customers
-
-- `POST /clientes`
-- `GET /clientes`
-- `GET /clientes/{id}`
-- `GET /clientes/rut/{rut}`
-- `PUT /clientes/{id}`
-
-### Products
-
-- `POST /productos`
-- `GET /productos`
-- `GET /productos/{id}`
-- `GET /productos/sku/{sku}`
-- `PUT /productos/{id}`
-
-### Orders
-
-- `POST /ordenes`
-- `GET /ordenes`
-- `GET /ordenes/{id}`
-- `PUT /ordenes/{id}`
-
-## Order Status
-
-- `CREADA`
-- `PAGADA`
-- `EN_PREPARACION`
-- `ENVIADA`
-- `ENTREGADA`
-- `CANCELADA`
 
 ## Run
 
+Start PostgreSQL:
+
 ```bash
+docker compose up -d
+```
+
+Run one service:
+
+```bash
+cd services/customer-service
 mvn spring-boot:run
+```
+
+Build all services from the repository root:
+
+```bash
+mvn clean package
 ```
