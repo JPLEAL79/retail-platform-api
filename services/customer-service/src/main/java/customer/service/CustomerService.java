@@ -20,13 +20,8 @@ public class CustomerService {
         this.repository = repository;
     }
 
-    public Page<Customer> getAll(Boolean active, int page, int size) {
+    public Page<Customer> getAll(int page, int size) {
         Pageable pageable = buildPageable(page, size);
-
-        if (active != null) {
-            return repository.findByActiveOrderByIdAsc(active, pageable);
-        }
-
         return repository.findAllByOrderByIdAsc(pageable);
     }
 
@@ -64,18 +59,12 @@ public class CustomerService {
         existingCustomer.setLastName(updatedCustomer.getLastName());
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setPhone(updatedCustomer.getPhone());
-        existingCustomer.setActive(updatedCustomer.getActive());
-
         return repository.save(existingCustomer);
     }
 
     @Transactional
     public void delete(Long id) {
-        Customer customer = getById(id);
-
-        // We keep the customer row because orders may reference this id in another service.
-        customer.setActive(false);
-        repository.save(customer);
+        repository.delete(getById(id));
     }
 
     private void ensureUniqueBusinessFields(Customer customer, Long currentCustomerId) {

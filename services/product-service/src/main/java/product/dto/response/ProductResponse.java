@@ -17,9 +17,6 @@ public class ProductResponse {
     private BigDecimal price;
     @JsonProperty("stock")
     private Integer stock;
-    @JsonProperty("activo")
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -68,11 +65,4 @@ public class ProductResponse {
         this.stock = stock;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

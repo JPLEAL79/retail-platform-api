@@ -16,7 +16,6 @@ public final class ProductMapper {
         product.setBrand(request.getBrand());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
-        product.setActive(request.getActive());
         return product;
     }
 
@@ -28,7 +27,6 @@ public final class ProductMapper {
         response.setBrand(product.getBrand());
         response.setPrice(product.getPrice());
         response.setStock(product.getStock());
-        response.setActive(product.getActive());
         return response;
     }
 }

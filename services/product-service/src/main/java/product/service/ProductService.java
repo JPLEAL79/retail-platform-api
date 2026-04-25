@@ -20,13 +20,8 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public Page<Product> getAll(Boolean active, int page, int size) {
+    public Page<Product> getAll(int page, int size) {
         Pageable pageable = buildPageable(page, size);
-
-        if (active != null) {
-            return repository.findByActiveOrderByIdAsc(active, pageable);
-        }
-
         return repository.findAllByOrderByIdAsc(pageable);
     }
 
@@ -70,18 +65,12 @@ public class ProductService {
         existingProduct.setBrand(updatedProduct.getBrand());
         existingProduct.setPrice(updatedProduct.getPrice());
         existingProduct.setStock(updatedProduct.getStock());
-        existingProduct.setActive(updatedProduct.getActive());
-
         return repository.save(existingProduct);
     }
 
     @Transactional
     public void delete(Long id) {
-        Product product = getById(id);
-
-        // We keep the row to preserve catalog and order history.
-        product.setActive(false);
-        repository.save(product);
+        repository.delete(getById(id));
     }
 
     @Transactional

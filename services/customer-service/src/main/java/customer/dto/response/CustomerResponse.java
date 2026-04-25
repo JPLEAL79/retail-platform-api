@@ -15,9 +15,6 @@ public class CustomerResponse {
     private String email;
     @JsonProperty("telefono")
     private String phone;
-    @JsonProperty("activo")
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -66,11 +63,4 @@ public class CustomerResponse {
         this.phone = phone;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

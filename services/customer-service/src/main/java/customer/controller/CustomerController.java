@@ -29,11 +29,10 @@ public class CustomerController {
 
     @GetMapping
     public java.util.List<CustomerResponse> getAll(
-            @RequestParam(required = false) Boolean active,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return service.getAll(active, page, size)
+        return service.getAll(page, size)
                 .getContent()
                 .stream()
                 .map(CustomerMapper::toResponse)

@@ -46,11 +46,6 @@ public class ProductRequest {
     @JsonProperty("stock")
     private Integer stock;
 
-    @NotNull(message = "Active flag is required.")
-    @JsonProperty("activo")
-    @JsonAlias("active")
-    private Boolean active;
-
     public String getSku() {
         return sku;
     }
@@ -91,11 +86,4 @@ public class ProductRequest {
         this.stock = stock;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

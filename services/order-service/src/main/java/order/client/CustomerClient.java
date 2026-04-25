@@ -49,8 +49,7 @@ public class CustomerClient {
             @JsonAlias("nombre") String firstName,
             @JsonAlias("apellido") String lastName,
             @JsonAlias("correo") String email,
-            @JsonAlias("telefono") String phone,
-            @JsonAlias("activo") Boolean active
+            @JsonAlias("telefono") String phone
     ) {
     }
 }

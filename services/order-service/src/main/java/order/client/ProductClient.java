@@ -68,8 +68,7 @@ public class ProductClient {
             @JsonAlias("nombre") String name,
             @JsonAlias("marca") String brand,
             @JsonAlias("precio") BigDecimal price,
-            Integer stock,
-            @JsonAlias("activo") Boolean active
+            Integer stock
     ) {
     }
 

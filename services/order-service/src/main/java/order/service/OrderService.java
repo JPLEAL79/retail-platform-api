@@ -1,6 +1,5 @@
 package order.service;
 
-import order.client.CustomerClient;
 import order.client.ProductClient;
 import order.dto.request.OrderItemRequest;
 import order.dto.request.OrderRequest;
@@ -31,19 +30,15 @@ import java.util.Set;
 public class OrderService {
 
     private final OrderRepository repository;
-    private final CustomerClient customerClient;
     private final ProductClient productClient;
 
-    public OrderService(OrderRepository repository, CustomerClient customerClient, ProductClient productClient) {
+    public OrderService(OrderRepository repository, ProductClient productClient) {
         this.repository = repository;
-        this.customerClient = customerClient;
         this.productClient = productClient;
     }
 
     @Transactional
     public Order create(OrderRequest request) {
-        ensureActiveCustomer(request.getCustomerId());
-
         Order order = new Order();
         order.setCustomerId(request.getCustomerId());
         order.setStatus(resolveInitialStatus(request.getStatus()));
@@ -87,8 +82,6 @@ public class OrderService {
 
     @Transactional
     public Order update(Long id, OrderRequest request) {
-        ensureActiveCustomer(request.getCustomerId());
-
         Order existingOrder = getById(id);
         OrderStatus updatedStatus = resolveUpdatedStatus(existingOrder.getStatus(), request.getStatus());
 
@@ -152,10 +145,6 @@ public class OrderService {
             }
 
             ProductClient.ProductResponse product = productClient.getById(itemRequest.getProductId());
-
-            if (!Boolean.TRUE.equals(product.active())) {
-                throw new ConflictException("Product " + itemRequest.getProductId() + " is inactive.");
-            }
 
             BigDecimal subtotal = product.price().multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
 
@@ -289,14 +278,6 @@ public class OrderService {
             case SHIPPED -> requestedStatus == OrderStatus.DELIVERED;
             case DELIVERED, CANCELED -> false;
         };
-    }
-
-    private void ensureActiveCustomer(Long customerId) {
-        CustomerClient.CustomerResponse customer = customerClient.getById(customerId);
-
-        if (!Boolean.TRUE.equals(customer.active())) {
-            throw new ConflictException("Customer " + customerId + " is inactive.");
-        }
     }
 
     private DeliveryAddress buildAddress(Order order, OrderRequest request) {

@@ -11,8 +11,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Page<Customer> findAllByOrderByIdAsc(Pageable pageable);
 
-    Page<Customer> findByActiveOrderByIdAsc(Boolean active, Pageable pageable);
-
     boolean existsByRut(String rut);
 
     boolean existsByRutAndIdNot(String rut, Long id);

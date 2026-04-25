@@ -11,8 +11,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllByOrderByIdAsc(Pageable pageable);
 
-    Page<Product> findByActiveOrderByIdAsc(Boolean active, Pageable pageable);
-
     boolean existsBySku(String sku);
 
     boolean existsBySkuAndIdNot(String sku, Long id);

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -50,11 +49,6 @@ public class CustomerRequest {
     @JsonAlias("phone")
     private String phone;
 
-    @NotNull(message = "Active flag is required.")
-    @JsonProperty("activo")
-    @JsonAlias("active")
-    private Boolean active;
-
     public String getRut() {
         return rut;
     }
@@ -95,11 +89,4 @@ public class CustomerRequest {
         this.phone = phone;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }
