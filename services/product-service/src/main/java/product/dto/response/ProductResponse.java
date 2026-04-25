@@ -1,15 +1,23 @@
 package product.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class ProductResponse {
 
     private Long id;
+    @JsonProperty("sku")
     private String sku;
+    @JsonProperty("nombre")
     private String name;
+    @JsonProperty("marca")
     private String brand;
+    @JsonProperty("precio")
     private BigDecimal price;
+    @JsonProperty("stock")
     private Integer stock;
+    @JsonProperty("activo")
     private Boolean active;
 
     public Long getId() {

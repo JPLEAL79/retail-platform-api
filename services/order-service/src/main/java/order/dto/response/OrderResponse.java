@@ -1,5 +1,6 @@
 package order.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import order.entity.OrderStatus;
 
 import java.math.BigDecimal;
@@ -8,10 +9,15 @@ import java.util.List;
 public class OrderResponse {
 
     private Long id;
+    @JsonProperty("clienteId")
     private Long customerId;
+    @JsonProperty("montoTotal")
     private BigDecimal total;
+    @JsonProperty("estado")
     private OrderStatus status;
+    @JsonProperty("detalles")
     private List<OrderItemResponse> items;
+    @JsonProperty("direccionEntrega")
     private DeliveryAddressResponse deliveryAddress;
 
     public Long getId() {

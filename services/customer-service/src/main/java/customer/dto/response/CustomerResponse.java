@@ -1,13 +1,21 @@
 package customer.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CustomerResponse {
 
     private Long id;
+    @JsonProperty("rut")
     private String rut;
+    @JsonProperty("nombre")
     private String firstName;
+    @JsonProperty("apellido")
     private String lastName;
+    @JsonProperty("correo")
     private String email;
+    @JsonProperty("telefono")
     private String phone;
+    @JsonProperty("activo")
     private Boolean active;
 
     public Long getId() {

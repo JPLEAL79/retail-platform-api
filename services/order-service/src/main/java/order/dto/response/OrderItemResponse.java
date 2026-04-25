@@ -1,12 +1,18 @@
 package order.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class OrderItemResponse {
 
+    @JsonProperty("productoId")
     private Long productId;
+    @JsonProperty("cantidad")
     private Integer quantity;
+    @JsonProperty("precioUnitario")
     private BigDecimal unitPrice;
+    @JsonProperty("subtotal")
     private BigDecimal subtotal;
 
     public Long getProductId() {

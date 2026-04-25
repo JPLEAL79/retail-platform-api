@@ -4,11 +4,14 @@ import customer.entity.Customer;
 import common.exception.ConflictException;
 import common.exception.ResourceNotFoundException;
 import customer.repository.CustomerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class CustomerService {
 
     private final CustomerRepository repository;
@@ -17,8 +20,14 @@ public class CustomerService {
         this.repository = repository;
     }
 
-    public List<Customer> getAll() {
-        return repository.findAll();
+    public Page<Customer> getAll(Boolean active, int page, int size) {
+        Pageable pageable = buildPageable(page, size);
+
+        if (active != null) {
+            return repository.findByActiveOrderByIdAsc(active, pageable);
+        }
+
+        return repository.findAllByOrderByIdAsc(pageable);
     }
 
     public Customer getById(Long id) {
@@ -31,6 +40,7 @@ public class CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with RUT " + rut + "."));
     }
 
+    @Transactional
     public Customer create(Customer customer) {
         if (customer == null) {
             throw new IllegalArgumentException("Customer cannot be null.");
@@ -40,6 +50,7 @@ public class CustomerService {
         return repository.save(customer);
     }
 
+    @Transactional
     public Customer update(Long id, Customer updatedCustomer) {
         if (updatedCustomer == null) {
             throw new IllegalArgumentException("Customer cannot be null.");
@@ -58,6 +69,7 @@ public class CustomerService {
         return repository.save(existingCustomer);
     }
 
+    @Transactional
     public void delete(Long id) {
         Customer customer = getById(id);
 
@@ -94,5 +106,11 @@ public class CustomerService {
         if (repository.existsByPhoneAndIdNot(customer.getPhone(), currentCustomerId)) {
             throw new ConflictException("A customer with this phone already exists.");
         }
+    }
+
+    private Pageable buildPageable(int page, int size) {
+        int resolvedPage = Math.max(page, 0);
+        int resolvedSize = Math.min(Math.max(size, 1), 100);
+        return PageRequest.of(resolvedPage, resolvedSize);
     }
 }

@@ -3,10 +3,15 @@ package order.dto.response;
 public class DeliveryAddressResponse {
 
     private String region;
+    @com.fasterxml.jackson.annotation.JsonProperty("ciudad")
     private String city;
+    @com.fasterxml.jackson.annotation.JsonProperty("calle")
     private String street;
+    @com.fasterxml.jackson.annotation.JsonProperty("numero")
     private String streetNumber;
+    @com.fasterxml.jackson.annotation.JsonProperty("numeroDepto")
     private String apartmentNumber;
+    @com.fasterxml.jackson.annotation.JsonProperty("referencia")
     private String reference;
 
     public String getRegion() {
