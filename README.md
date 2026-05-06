@@ -5,10 +5,11 @@ A small retail backend built with Spring Boot. It is split into separate service
 ## Stack
 
 - Java 17
-- Spring Boot 3.5.13
+- Spring Boot 3.5.14
 - Spring Web
 - Spring Data JPA
 - Bean Validation
+- Spring Boot Actuator
 - PostgreSQL
 - Maven
 - Docker Compose
@@ -55,11 +56,27 @@ mvn -pl services/product-service spring-boot:run
 mvn -pl services/order-service spring-boot:run
 ```
 
+Run with a profile:
+
+```bash
+mvn -pl services/customer-service spring-boot:run -Dspring-boot.run.profiles=local
+```
+
 Build all services from the repository root:
 
 ```bash
 mvn clean package
 ```
+
+Health checks:
+
+```text
+GET http://localhost:8082/actuator/health
+GET http://localhost:8083/actuator/health
+GET http://localhost:8084/actuator/health
+```
+
+Paged list endpoints return `content`, `page`, `size`, `totalElements`, and `totalPages`.
 
 ## IDE Notes
 
@@ -70,7 +87,7 @@ For IntelliJ IDEA:
 - Open the repository from the root `pom.xml` as a Maven project.
 - Use JDK 17 for both the project SDK and Maven importer.
 - The warning shown in `docker/postgres/init-databases.sql` about no configured data source is not a SQL error. It only means IntelliJ has no PostgreSQL connection attached to the SQL editor yet.
-- Create a PostgreSQL data source with host `localhost`, port `5432`, user `user`, password `pass`, and database `postgres`.
+- Create PostgreSQL data sources with host `localhost`, port `5432`, user `user`, password `pass`, and databases `customerdb`, `productdb`, and `orderdb`.
 
 For VS Code:
 

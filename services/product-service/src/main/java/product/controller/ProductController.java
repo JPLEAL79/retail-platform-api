@@ -1,5 +1,6 @@
 package product.controller;
 
+import common.dto.PageResponse;
 import product.dto.request.ProductRequest;
 import product.dto.response.ProductResponse;
 import product.mapper.ProductMapper;
@@ -29,15 +30,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public java.util.List<ProductResponse> getAll(
+    public PageResponse<ProductResponse> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return service.getAll(page, size)
-                .getContent()
-                .stream()
-                .map(ProductMapper::toResponse)
-                .toList();
+        return PageResponse.from(service.getAll(page, size), ProductMapper::toResponse);
     }
 
     @GetMapping("/{id}")

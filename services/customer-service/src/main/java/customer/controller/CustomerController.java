@@ -1,5 +1,6 @@
 package customer.controller;
 
+import common.dto.PageResponse;
 import customer.dto.request.CustomerRequest;
 import customer.dto.response.CustomerResponse;
 import customer.mapper.CustomerMapper;
@@ -28,15 +29,11 @@ public class CustomerController {
     }
 
     @GetMapping
-    public java.util.List<CustomerResponse> getAll(
+    public PageResponse<CustomerResponse> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return service.getAll(page, size)
-                .getContent()
-                .stream()
-                .map(CustomerMapper::toResponse)
-                .toList();
+        return PageResponse.from(service.getAll(page, size), CustomerMapper::toResponse);
     }
 
     @GetMapping("/{id}")

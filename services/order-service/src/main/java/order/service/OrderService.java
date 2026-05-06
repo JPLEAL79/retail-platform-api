@@ -1,6 +1,7 @@
 package order.service;
 
 import order.client.ProductClient;
+import order.client.CustomerClient;
 import order.dto.request.OrderItemRequest;
 import order.dto.request.OrderRequest;
 import order.entity.DeliveryAddress;
@@ -31,14 +32,18 @@ public class OrderService {
 
     private final OrderRepository repository;
     private final ProductClient productClient;
+    private final CustomerClient customerClient;
 
-    public OrderService(OrderRepository repository, ProductClient productClient) {
+    public OrderService(OrderRepository repository, ProductClient productClient, CustomerClient customerClient) {
         this.repository = repository;
         this.productClient = productClient;
+        this.customerClient = customerClient;
     }
 
     @Transactional
     public Order create(OrderRequest request) {
+        customerClient.getById(request.getCustomerId());
+
         Order order = new Order();
         order.setCustomerId(request.getCustomerId());
         order.setStatus(resolveInitialStatus(request.getStatus()));
@@ -84,6 +89,7 @@ public class OrderService {
     public Order update(Long id, OrderRequest request) {
         Order existingOrder = getById(id);
         OrderStatus updatedStatus = resolveUpdatedStatus(existingOrder.getStatus(), request.getStatus());
+        customerClient.getById(request.getCustomerId());
 
         if (updatedStatus == OrderStatus.CANCELED && existingOrder.getStatus() != OrderStatus.CANCELED) {
             Map<Long, Integer> stockChanges = buildStockChanges(existingOrder.getItems(), true, List.of(), false);

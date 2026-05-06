@@ -1,5 +1,6 @@
 package order.controller;
 
+import common.dto.PageResponse;
 import order.dto.request.OrderRequest;
 import order.dto.response.OrderResponse;
 import order.entity.OrderStatus;
@@ -35,17 +36,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public java.util.List<OrderResponse> getAll(
+    public PageResponse<OrderResponse> getAll(
             @RequestParam(required = false) Long customerId,
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return service.getAll(customerId, status, page, size)
-                .getContent()
-                .stream()
-                .map(OrderMapper::toResponse)
-                .toList();
+        return PageResponse.from(service.getAll(customerId, status, page, size), OrderMapper::toResponse);
     }
 
     @GetMapping("/{id}")
