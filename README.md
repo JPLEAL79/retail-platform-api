@@ -52,6 +52,8 @@ docker compose up -d
 
 The local Docker setup uses development defaults. Override them with `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_USER`, and `DB_PASSWORD` when needed.
 
+Optional environment overrides are documented in `.env.example`. Docker Compose reads `.env` automatically, while services started with Maven use the variables already present in your shell.
+
 Install the shared module once before running individual services:
 
 ```bash
