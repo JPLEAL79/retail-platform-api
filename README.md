@@ -23,6 +23,8 @@ A small retail backend built with Spring Boot. It is split into separate service
 | `order-service` | `8084` | `orderdb` | Orders, order items, delivery address, and status |
 | `common` | N/A | N/A | Shared API errors, exceptions, and common properties |
 
+Orders keep a small, explicit lifecycle: `CREATED -> PAID -> DELIVERED`. They can be canceled while they are still `CREATED` or `PAID`; `DELIVERED` and `CANCELED` close the order. Status-only changes use `PATCH /orders/{orderId}/status`.
+
 ## Structure
 
 ```text
@@ -48,6 +50,12 @@ Start PostgreSQL:
 docker compose up -d
 ```
 
+Install the shared module once before running individual services:
+
+```bash
+mvn -pl services/common install
+```
+
 Run a service:
 
 ```bash
@@ -59,6 +67,7 @@ mvn -pl services/order-service spring-boot:run
 Run with a profile:
 
 ```bash
+mvn -pl services/common install
 mvn -pl services/customer-service spring-boot:run -Dspring-boot.run.profiles=local
 ```
 

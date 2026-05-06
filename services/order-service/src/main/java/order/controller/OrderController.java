@@ -2,6 +2,7 @@ package order.controller;
 
 import common.dto.PageResponse;
 import order.dto.request.OrderRequest;
+import order.dto.request.OrderStatusRequest;
 import order.dto.response.OrderResponse;
 import order.entity.OrderStatus;
 import order.mapper.OrderMapper;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +55,11 @@ public class OrderController {
     @PutMapping("/{id}")
     public OrderResponse update(@PathVariable Long id, @Valid @RequestBody OrderRequest request) {
         return OrderMapper.toResponse(service.update(id, request));
+    }
+
+    @PatchMapping("/{id}/status")
+    public OrderResponse updateStatus(@PathVariable Long id, @Valid @RequestBody OrderStatusRequest request) {
+        return OrderMapper.toResponse(service.updateStatus(id, request.getStatus()));
     }
 
     @DeleteMapping("/{id}")

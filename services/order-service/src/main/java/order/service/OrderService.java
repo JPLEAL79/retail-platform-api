@@ -123,6 +123,32 @@ public class OrderService {
     }
 
     @Transactional
+    public Order updateStatus(Long id, OrderStatus requestedStatus) {
+        if (requestedStatus == null) {
+            throw new IllegalArgumentException("Status cannot be null.");
+        }
+
+        Order existingOrder = getById(id);
+        OrderStatus updatedStatus = resolveUpdatedStatus(existingOrder.getStatus(), requestedStatus);
+
+        if (updatedStatus == OrderStatus.CANCELED && existingOrder.getStatus() != OrderStatus.CANCELED) {
+            Map<Long, Integer> stockChanges = buildStockChanges(existingOrder.getItems(), true, List.of(), false);
+            applyStockChanges(stockChanges);
+
+            try {
+                existingOrder.setStatus(OrderStatus.CANCELED);
+                return repository.save(existingOrder);
+            } catch (RuntimeException exception) {
+                rollbackStockChanges(stockChanges);
+                throw exception;
+            }
+        }
+
+        existingOrder.setStatus(updatedStatus);
+        return repository.save(existingOrder);
+    }
+
+    @Transactional
     public void delete(Long id) {
         Order order = getById(id);
 
@@ -183,9 +209,9 @@ public class OrderService {
             return currentStatus;
         }
 
-        // Orders follow a simple forward-only lifecycle, except cancellation before shipping.
+        // Orders follow a simple forward-only lifecycle, with cancellation before delivery.
         if (!isAllowedTransition(currentStatus, requestedStatus)) {
-            throw new ConflictException("Invalid order status transition from " + currentStatus + " to " + requestedStatus + ".");
+            throw new ConflictException(buildInvalidTransitionMessage(currentStatus, requestedStatus));
         }
 
         return requestedStatus;
@@ -279,11 +305,25 @@ public class OrderService {
     private boolean isAllowedTransition(OrderStatus currentStatus, OrderStatus requestedStatus) {
         return switch (currentStatus) {
             case CREATED -> requestedStatus == OrderStatus.PAID || requestedStatus == OrderStatus.CANCELED;
-            case PAID -> requestedStatus == OrderStatus.PREPARING || requestedStatus == OrderStatus.CANCELED;
-            case PREPARING -> requestedStatus == OrderStatus.SHIPPED;
-            case SHIPPED -> requestedStatus == OrderStatus.DELIVERED;
+            case PAID -> requestedStatus == OrderStatus.DELIVERED || requestedStatus == OrderStatus.CANCELED;
             case DELIVERED, CANCELED -> false;
         };
+    }
+
+    private String buildInvalidTransitionMessage(OrderStatus currentStatus, OrderStatus requestedStatus) {
+        if (currentStatus == OrderStatus.DELIVERED && requestedStatus == OrderStatus.CANCELED) {
+            return "Delivered orders cannot be canceled.";
+        }
+
+        if (currentStatus == OrderStatus.DELIVERED) {
+            return "Delivered orders are already completed.";
+        }
+
+        if (currentStatus == OrderStatus.CANCELED) {
+            return "Canceled orders cannot be changed.";
+        }
+
+        return "Order cannot move from " + currentStatus + " to " + requestedStatus + ".";
     }
 
     private DeliveryAddress buildAddress(Order order, OrderRequest request) {
