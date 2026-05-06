@@ -50,6 +50,8 @@ Start PostgreSQL:
 docker compose up -d
 ```
 
+The local Docker setup uses development defaults. Override them with `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_USER`, and `DB_PASSWORD` when needed.
+
 Install the shared module once before running individual services:
 
 ```bash
@@ -96,7 +98,7 @@ For IntelliJ IDEA:
 - Open the repository from the root `pom.xml` as a Maven project.
 - Use JDK 17 for both the project SDK and Maven importer.
 - The warning shown in `docker/postgres/init-databases.sql` about no configured data source is not a SQL error. It only means IntelliJ has no PostgreSQL connection attached to the SQL editor yet.
-- Create PostgreSQL data sources with host `localhost`, port `5432`, user `user`, password `pass`, and databases `customerdb`, `productdb`, and `orderdb`.
+- Create PostgreSQL data sources with host `localhost`, port `5432`, the configured development credentials, and databases `customerdb`, `productdb`, and `orderdb`.
 
 For VS Code:
 
