@@ -31,9 +31,6 @@ public class Customer {
     @Column(nullable = false, unique = true, length = 20)
     private String phone;
 
-    @Column(nullable = false)
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -82,11 +79,4 @@ public class Customer {
         this.phone = phone;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

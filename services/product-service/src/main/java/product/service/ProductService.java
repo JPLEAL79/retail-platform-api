@@ -4,11 +4,14 @@ import product.entity.Product;
 import common.exception.ConflictException;
 import common.exception.ResourceNotFoundException;
 import product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository repository;
@@ -17,8 +20,9 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public List<Product> getAll() {
-        return repository.findAll();
+    public Page<Product> getAll(int page, int size) {
+        Pageable pageable = buildPageable(page, size);
+        return repository.findAllByOrderByIdAsc(pageable);
     }
 
     public Product getById(Long id) {
@@ -31,6 +35,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with SKU " + sku + "."));
     }
 
+    @Transactional
     public Product create(Product product) {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null.");
@@ -43,6 +48,7 @@ public class ProductService {
         return repository.save(product);
     }
 
+    @Transactional
     public Product update(Long id, Product updatedProduct) {
         if (updatedProduct == null) {
             throw new IllegalArgumentException("Product cannot be null.");
@@ -59,16 +65,39 @@ public class ProductService {
         existingProduct.setBrand(updatedProduct.getBrand());
         existingProduct.setPrice(updatedProduct.getPrice());
         existingProduct.setStock(updatedProduct.getStock());
-        existingProduct.setActive(updatedProduct.getActive());
-
         return repository.save(existingProduct);
     }
 
+    @Transactional
     public void delete(Long id) {
-        Product product = getById(id);
+        repository.delete(getById(id));
+    }
 
-        // We keep the row to preserve catalog and order history.
-        product.setActive(false);
+    @Transactional
+    public void adjustStock(Long id, Integer delta) {
+        if (delta == null) {
+            throw new IllegalArgumentException("Stock delta cannot be null.");
+        }
+
+        if (delta == 0) {
+            return;
+        }
+
+        Product product = getById(id);
+        int updatedStock = product.getStock() + delta;
+
+        if (updatedStock < 0) {
+            throw new ConflictException("Product " + id + " does not have enough stock.");
+        }
+
+        // Stock changes are applied explicitly so inventory stays in sync with orders.
+        product.setStock(updatedStock);
         repository.save(product);
+    }
+
+    private Pageable buildPageable(int page, int size) {
+        int resolvedPage = Math.max(page, 0);
+        int resolvedSize = Math.min(Math.max(size, 1), 100);
+        return PageRequest.of(resolvedPage, resolvedSize);
     }
 }

@@ -1,7 +1,10 @@
 package order.controller;
 
+import common.dto.PageResponse;
 import order.dto.request.OrderRequest;
+import order.dto.request.OrderStatusRequest;
 import order.dto.response.OrderResponse;
+import order.entity.OrderStatus;
 import order.mapper.OrderMapper;
 import order.service.OrderService;
 import jakarta.validation.Valid;
@@ -9,14 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -35,11 +38,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderResponse> getAll() {
-        return service.getAll()
-                .stream()
-                .map(OrderMapper::toResponse)
-                .toList();
+    public PageResponse<OrderResponse> getAll(
+            @RequestParam(required = false) Long customerId,
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return PageResponse.from(service.getAll(customerId, status, page, size), OrderMapper::toResponse);
     }
 
     @GetMapping("/{id}")
@@ -50,6 +55,11 @@ public class OrderController {
     @PutMapping("/{id}")
     public OrderResponse update(@PathVariable Long id, @Valid @RequestBody OrderRequest request) {
         return OrderMapper.toResponse(service.update(id, request));
+    }
+
+    @PatchMapping("/{id}/status")
+    public OrderResponse updateStatus(@PathVariable Long id, @Valid @RequestBody OrderStatusRequest request) {
+        return OrderMapper.toResponse(service.updateStatus(id, request.getStatus()));
     }
 
     @DeleteMapping("/{id}")

@@ -16,7 +16,6 @@ public final class CustomerMapper {
         customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
         customer.setPhone(request.getPhone());
-        customer.setActive(request.getActive());
         return customer;
     }
 
@@ -28,7 +27,6 @@ public final class CustomerMapper {
         response.setLastName(customer.getLastName());
         response.setEmail(customer.getEmail());
         response.setPhone(customer.getPhone());
-        response.setActive(customer.getActive());
         return response;
     }
 }

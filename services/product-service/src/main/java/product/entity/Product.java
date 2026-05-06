@@ -33,9 +33,6 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(nullable = false)
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -84,11 +81,4 @@ public class Product {
         this.stock = stock;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }
