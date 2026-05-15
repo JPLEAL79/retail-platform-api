@@ -54,6 +54,10 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.backup
+*.orig
+*.rej
 *.swp
 *.swo
 *~
@@ -66,3 +70,5 @@ failsafe-reports/
 
 # Local data
 *.db
+*.sqlite
+*.sqlite3
