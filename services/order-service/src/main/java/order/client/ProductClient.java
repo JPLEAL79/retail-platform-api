@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import common.exception.ConflictException;
 import common.exception.DownstreamServiceException;
 import common.exception.ResourceNotFoundException;
+import common.security.AuthorizationHeaderProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,7 +23,8 @@ public class ProductClient {
     public ProductClient(
             @Value("${clients.product-service.url}") String productServiceUrl,
             @Value("${clients.connect-timeout-ms}") int connectTimeoutMs,
-            @Value("${clients.read-timeout-ms}") int readTimeoutMs
+            @Value("${clients.read-timeout-ms}") int readTimeoutMs,
+            AuthorizationHeaderProvider authorizationHeaderProvider
     ) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(connectTimeoutMs);
@@ -30,6 +33,8 @@ public class ProductClient {
         this.restClient = RestClient.builder()
                 .baseUrl(productServiceUrl)
                 .requestFactory(requestFactory)
+                .defaultRequest(request -> authorizationHeaderProvider.currentValue()
+                        .ifPresent(value -> request.header(HttpHeaders.AUTHORIZATION, value)))
                 .build();
     }
 

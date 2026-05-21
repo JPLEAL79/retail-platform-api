@@ -9,6 +9,8 @@ A small retail backend built with Spring Boot. It is split into separate service
 - Spring Web
 - Spring Data JPA
 - Bean Validation
+- Spring Security
+- JWT
 - Spring Boot Actuator
 - PostgreSQL
 - Maven
@@ -18,12 +20,15 @@ A small retail backend built with Spring Boot. It is split into separate service
 
 | Module | Port | Database | Responsibility |
 | --- | --- | --- | --- |
-| `customer-service` | `8082` | `customerdb` | Customer profile and contact data |
-| `product-service` | `8083` | `productdb` | Product catalog, price, stock, and active status |
-| `order-service` | `8084` | `orderdb` | Orders, order items, delivery address, and status |
-| `common` | N/A | N/A | Shared API errors, exceptions, and common properties |
+| `auth-service` | `8085` | `authdb` | Login and JWT tokens |
+| `customer-service` | `8082` | `customerdb` | Customer data |
+| `product-service` | `8083` | `productdb` | Catalog and stock |
+| `order-service` | `8084` | `orderdb` | Orders and status flow |
+| `common` | N/A | N/A | Shared errors and security |
 
 Orders keep a small, explicit lifecycle: `CREATED -> PAID -> DELIVERED`. They can be canceled while they are still `CREATED` or `PAID`; `DELIVERED` and `CANCELED` close the order. Status-only changes use `PATCH /orders/{orderId}/status`.
+
+Protected APIs require `Authorization: Bearer <token>`. Get a local token with `POST /auth/login` using the seeded users documented in `.env.example`.
 
 ## Structure
 
@@ -33,6 +38,7 @@ retail-platform-api
 |   `-- postgres
 |       `-- init-databases.sql
 |-- services
+|   |-- auth-service
 |   |-- common
 |   |-- customer-service
 |   |-- product-service
@@ -51,9 +57,7 @@ docker compose up -d
 ```
 
 The local Docker setup uses development defaults. Override them with `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_USER`, and `DB_PASSWORD` when needed.
-
 Optional environment overrides are documented in `.env.example`. Docker Compose reads `.env` automatically, while services started with Maven use the variables already present in your shell.
-
 Install the shared module once before running individual services:
 
 ```bash
@@ -63,6 +67,7 @@ mvn -pl services/common install
 Run a service:
 
 ```bash
+mvn -pl services/auth-service spring-boot:run
 mvn -pl services/customer-service spring-boot:run
 mvn -pl services/product-service spring-boot:run
 mvn -pl services/order-service spring-boot:run
@@ -81,12 +86,24 @@ Build all services from the repository root:
 mvn clean package
 ```
 
-Health checks:
+Local endpoints:
 
 ```text
-GET http://localhost:8082/actuator/health
-GET http://localhost:8083/actuator/health
-GET http://localhost:8084/actuator/health
+Auth
+POST http://localhost:8085/auth/login
+GET  http://localhost:8085/actuator/health
+
+Customers
+GET  http://localhost:8082/customers
+GET  http://localhost:8082/actuator/health
+
+Products
+GET  http://localhost:8083/products
+GET  http://localhost:8083/actuator/health
+
+Orders
+GET  http://localhost:8084/orders
+GET  http://localhost:8084/actuator/health
 ```
 
 Paged list endpoints return `content`, `page`, `size`, `totalElements`, and `totalPages`.
@@ -100,7 +117,7 @@ For IntelliJ IDEA:
 - Open the repository from the root `pom.xml` as a Maven project.
 - Use JDK 17 for both the project SDK and Maven importer.
 - The warning shown in `docker/postgres/init-databases.sql` about no configured data source is not a SQL error. It only means IntelliJ has no PostgreSQL connection attached to the SQL editor yet.
-- Create PostgreSQL data sources with host `localhost`, port `5432`, the configured development credentials, and databases `customerdb`, `productdb`, and `orderdb`.
+- Create PostgreSQL data sources with host `localhost`, port `5432`, the configured development credentials, and databases `authdb`, `customerdb`, `productdb`, and `orderdb`.
 
 For VS Code:
 
