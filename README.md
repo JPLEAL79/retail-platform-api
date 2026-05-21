@@ -20,11 +20,11 @@ A small retail backend built with Spring Boot. It is split into separate service
 
 | Module | Port | Database | Responsibility |
 | --- | --- | --- | --- |
-| `auth-service` | `8085` | `authdb` | Login, JWT generation, and seeded local users |
-| `customer-service` | `8082` | `customerdb` | Customer profile and contact data |
-| `product-service` | `8083` | `productdb` | Product catalog, price, stock, and active status |
-| `order-service` | `8084` | `orderdb` | Orders, order items, delivery address, and status |
-| `common` | N/A | N/A | Shared API errors, exceptions, common properties, and JWT validation |
+| `auth-service` | `8085` | `authdb` | Login and JWT tokens |
+| `customer-service` | `8082` | `customerdb` | Customer data |
+| `product-service` | `8083` | `productdb` | Catalog and stock |
+| `order-service` | `8084` | `orderdb` | Orders and status flow |
+| `common` | N/A | N/A | Shared errors and security |
 
 Orders keep a small, explicit lifecycle: `CREATED -> PAID -> DELIVERED`. They can be canceled while they are still `CREATED` or `PAID`; `DELIVERED` and `CANCELED` close the order. Status-only changes use `PATCH /orders/{orderId}/status`.
 
@@ -86,13 +86,24 @@ Build all services from the repository root:
 mvn clean package
 ```
 
-Health checks:
+Local endpoints:
 
 ```text
-GET http://localhost:8085/actuator/health
-GET http://localhost:8082/actuator/health
-GET http://localhost:8083/actuator/health
-GET http://localhost:8084/actuator/health
+Auth
+POST http://localhost:8085/auth/login
+GET  http://localhost:8085/actuator/health
+
+Customers
+GET  http://localhost:8082/customers
+GET  http://localhost:8082/actuator/health
+
+Products
+GET  http://localhost:8083/products
+GET  http://localhost:8083/actuator/health
+
+Orders
+GET  http://localhost:8084/orders
+GET  http://localhost:8084/actuator/health
 ```
 
 Paged list endpoints return `content`, `page`, `size`, `totalElements`, and `totalPages`.
