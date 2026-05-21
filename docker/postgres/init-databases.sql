@@ -1,3 +1,4 @@
 CREATE DATABASE customerdb;
 CREATE DATABASE productdb;
 CREATE DATABASE orderdb;
+CREATE DATABASE authdb;
