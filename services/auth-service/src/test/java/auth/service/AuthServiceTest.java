@@ -5,7 +5,7 @@ import auth.dto.response.LoginResponse;
 import auth.entity.User;
 import auth.repository.UserRepository;
 import auth.security.JwtService;
-import common.exception.ConflictException;
+import common.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -46,7 +46,7 @@ class AuthServiceTest {
         when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("admin123", "encoded-password")).thenReturn(false);
 
-        assertThrows(ConflictException.class, () -> service.login(request));
+        assertThrows(UnauthorizedException.class, () -> service.login(request));
     }
 
     @Test
@@ -55,7 +55,7 @@ class AuthServiceTest {
         User user = user(false);
         when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
 
-        assertThrows(ConflictException.class, () -> service.login(request));
+        assertThrows(UnauthorizedException.class, () -> service.login(request));
 
         verify(userRepository).findByUsername("admin");
     }
